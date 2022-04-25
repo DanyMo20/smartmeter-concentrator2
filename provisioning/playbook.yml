@@ -35,7 +35,7 @@
 
   tasks:
     - name: "flush all iptables rules"
-      iptables:
+      ansible.builtin.iptables:
         flush: yes
 
 - name: Setup DROP rules on MAN
@@ -46,16 +46,16 @@
   become_user: root
 
   tasks:
-    - set_fact:
-        private_ip_address_range: ['10.0.0.0/8', '172.16.0.0/12', '224.0.0.0/4']
     - name: setup
-      vars:
-        iptables_rules:
-          - chain: FORWARD
-            destination: '{{ item }}'
-            in_interface: eth2
-            out_interface: eth0
-            jump: DROP
-      loop: '{{ private_ip_address_range }}'
+      ansible.builtin.iptables:
+          chain: FORWARD
+          destination: '{{ private_ip_address_range }}'
+          in_interface: eth2
+          out_interface: eth0
+          jump: DROP
+      loop:
+         - 10.0.0.0/8
+         - 172.16.0.0/12
+         - 224.0.0.0/4
 
 
